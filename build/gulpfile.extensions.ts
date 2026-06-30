@@ -75,6 +75,7 @@ const compilations = [
 	'extensions/media-preview/tsconfig.json',
 	'extensions/merge-conflict/tsconfig.json',
 	'extensions/mermaid-markdown-features/tsconfig.json',
+	'extensions/mini-qualia/tsconfig.json',
 	'extensions/terminal-suggest/tsconfig.json',
 	'extensions/microsoft-authentication/tsconfig.json',
 	'extensions/notebook-renderers/tsconfig.json',

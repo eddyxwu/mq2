@@ -1,0 +1,360 @@
+{
+  "name": "mini-qualia",
+  "displayName": "MiniQualia",
+  "description": "Research-native layer for VS Code: notebook-grounded agents, task DAGs, and findings with provenance. A prototype inspired by Quadrillion Labs' Qualia.",
+  "version": "0.1.0",
+  "publisher": "miniqualia",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.128.0"
+  },
+  "categories": [
+    "Data Science",
+    "Notebooks",
+    "Machine Learning",
+    "Other"
+  ],
+  "capabilities": {
+    "virtualWorkspaces": {
+      "supported": false,
+      "description": "MiniQualia writes notebooks, state, and writeups to the workspace on disk."
+    },
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
+  "enabledApiProposals": [],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "miniQualia.newResearchSession",
+        "title": "New Research Session",
+        "category": "MiniQualia",
+        "icon": "$(add)"
+      },
+      {
+        "command": "miniQualia.openChat",
+        "title": "Open Chat",
+        "category": "MiniQualia",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "miniQualia.planResearchTasks",
+        "title": "Plan Research Tasks",
+        "category": "MiniQualia",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "miniQualia.runNextTask",
+        "title": "Run Next Task",
+        "category": "MiniQualia",
+        "icon": "$(run)"
+      },
+      {
+        "command": "miniQualia.runReadyTasks",
+        "title": "Run Ready Tasks (Parallel)",
+        "category": "MiniQualia",
+        "icon": "$(run-all)"
+      },
+      {
+        "command": "miniQualia.captureFinding",
+        "title": "Capture Claim",
+        "category": "MiniQualia",
+        "icon": "$(lightbulb)"
+      },
+      {
+        "command": "miniQualia.openTaskGraph",
+        "title": "Open Task Graph",
+        "category": "MiniQualia",
+        "icon": "$(type-hierarchy)"
+      },
+      {
+        "command": "miniQualia.exportWriteup",
+        "title": "Export Writeup",
+        "category": "MiniQualia",
+        "icon": "$(export)"
+      },
+      {
+        "command": "miniQualia.resetDemoState",
+        "title": "Reset Demo State",
+        "category": "MiniQualia",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "miniQualia.setApiKey",
+        "title": "Set Anthropic API Key",
+        "category": "MiniQualia",
+        "icon": "$(key)"
+      },
+      {
+        "command": "miniQualia.clearApiKey",
+        "title": "Clear Anthropic API Key",
+        "category": "MiniQualia",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "miniQualia.pickModel",
+        "title": "Select Model",
+        "category": "MiniQualia",
+        "icon": "$(symbol-enum)"
+      },
+      {
+        "command": "miniQualia.importSkills",
+        "title": "Import Skills (Claude Code / Cursor)",
+        "category": "MiniQualia",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "miniQualia.runAutonomously",
+        "title": "Run Autonomously (Infinity)",
+        "category": "MiniQualia",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "miniQualia.openKnowledgeGraph",
+        "title": "Open Knowledge Graph",
+        "category": "MiniQualia",
+        "icon": "$(type-hierarchy-sub)"
+      },
+      {
+        "command": "miniQualia.openFindingSource",
+        "title": "Open Finding Source",
+        "category": "MiniQualia",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "miniQualia.useSkill",
+        "title": "Use Skill in Chat",
+        "category": "MiniQualia",
+        "icon": "$(insert)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "miniQualia",
+          "title": "MiniQualia",
+          "icon": "$(beaker)"
+        }
+      ],
+      "secondarySidebar": [
+        {
+          "id": "miniQualiaChat",
+          "title": "MiniQualia Chat",
+          "icon": "$(comment-discussion)"
+        }
+      ]
+    },
+    "views": {
+      "miniQualiaChat": [
+        {
+          "type": "webview",
+          "id": "miniQualia.chat",
+          "name": "Chat",
+          "icon": "$(comment-discussion)",
+          "contextualTitle": "MiniQualia Chat"
+        }
+      ],
+      "miniQualia": [
+        {
+          "id": "miniQualia.agents",
+          "name": "Agents",
+          "icon": "$(organization)",
+          "contextualTitle": "MiniQualia"
+        },
+        {
+          "id": "miniQualia.tasks",
+          "name": "Tasks",
+          "icon": "$(checklist)",
+          "contextualTitle": "MiniQualia"
+        },
+        {
+          "type": "webview",
+          "id": "miniQualia.knowledge",
+          "name": "Knowledge",
+          "icon": "$(lightbulb)",
+          "contextualTitle": "MiniQualia"
+        },
+        {
+          "id": "miniQualia.skills",
+          "name": "Skills",
+          "icon": "$(symbol-event)",
+          "contextualTitle": "MiniQualia"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "miniQualia.tasks",
+        "contents": "No research session yet.\n\nStart a session to create a notebook, plan a task graph, and run notebook-grounded agents.\n[Start New Research Session](command:miniQualia.newResearchSession)\n[Open MiniQualia Chat](command:miniQualia.openChat)",
+        "when": "!miniQualia.hasProject"
+      },
+      {
+        "view": "miniQualia.tasks",
+        "contents": "Session ready, but no tasks planned.\n\nDescribe a research question in chat and plan a task graph.\n[Open MiniQualia Chat](command:miniQualia.openChat)\n[Plan Research Tasks](command:miniQualia.planResearchTasks)",
+        "when": "miniQualia.hasProject && !miniQualia.hasTasks"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "miniQualia.openChat",
+          "when": "view == miniQualia.agents",
+          "group": "navigation@1"
+        },
+        {
+          "command": "miniQualia.newResearchSession",
+          "when": "view == miniQualia.agents",
+          "group": "navigation@2"
+        },
+        {
+          "command": "miniQualia.runAutonomously",
+          "when": "view == miniQualia.agents",
+          "group": "navigation@3"
+        },
+        {
+          "command": "miniQualia.importSkills",
+          "when": "view == miniQualia.skills",
+          "group": "navigation@1"
+        },
+        {
+          "command": "miniQualia.planResearchTasks",
+          "when": "view == miniQualia.tasks",
+          "group": "navigation@1"
+        },
+        {
+          "command": "miniQualia.runNextTask",
+          "when": "view == miniQualia.tasks",
+          "group": "navigation@2"
+        },
+        {
+          "command": "miniQualia.runReadyTasks",
+          "when": "view == miniQualia.tasks",
+          "group": "navigation@3"
+        },
+        {
+          "command": "miniQualia.openTaskGraph",
+          "when": "view == miniQualia.tasks",
+          "group": "navigation@4"
+        },
+        {
+          "command": "miniQualia.captureFinding",
+          "when": "view == miniQualia.knowledge",
+          "group": "navigation@1"
+        },
+        {
+          "command": "miniQualia.openKnowledgeGraph",
+          "when": "view == miniQualia.knowledge",
+          "group": "navigation@2"
+        },
+        {
+          "command": "miniQualia.exportWriteup",
+          "when": "view == miniQualia.knowledge",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "miniQualia.useSkill",
+          "when": "view == miniQualia.skills && viewItem == miniQualia.skill",
+          "group": "inline"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "miniQualia.openFindingSource",
+          "when": "false"
+        },
+        {
+          "command": "miniQualia.useSkill",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "MiniQualia",
+      "properties": {
+        "miniQualia.model": {
+          "type": "string",
+          "enum": [
+            "claude-opus-4-8",
+            "claude-sonnet-4-6",
+            "claude-haiku-4-5"
+          ],
+          "default": "claude-opus-4-8",
+          "description": "Claude model used for the agentic chat and the LLM planner."
+        },
+        "miniQualia.planner": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "deterministic"
+          ],
+          "default": "auto",
+          "enumDescriptions": [
+            "Use the LLM planner when an Anthropic API key is set, otherwise the deterministic planner.",
+            "Always use the built-in deterministic planner."
+          ],
+          "description": "How research tasks are planned."
+        },
+        "miniQualia.enableNotebookExecution": {
+          "type": "boolean",
+          "default": true,
+          "description": "Execute generated notebook cells with the selected Jupyter kernel to capture measured results. Falls back to synthesized findings when no kernel is available."
+        },
+        "miniQualia.maxParallelAgents": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 8,
+          "description": "Maximum number of tasks run concurrently by 'Run Ready Tasks (Parallel)'."
+        },
+        "miniQualia.independence": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "infinity"
+          ],
+          "default": "high",
+          "enumDescriptions": [
+            "Ask for confirmation before non-trivial actions.",
+            "Make routine decisions; ask about significant ones.",
+            "Assume most things and proceed; ask only about major choices.",
+            "Fully autonomous — never ask; keep working until done (posts to Slack if configured)."
+          ],
+          "description": "How much the agent assumes versus asks (Qualia 'independence')."
+        },
+        "miniQualia.curiosity": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "default": "medium",
+          "description": "How much the agent explores beyond the immediate request (Qualia 'curiosity')."
+        },
+        "miniQualia.allowShellCommands": {
+          "type": "boolean",
+          "default": true,
+          "description": "Allow the agent's run_command tool to execute shell commands in the workspace."
+        },
+        "miniQualia.slackWebhookUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Incoming Slack webhook URL. When set and independence is Infinity, the agent posts progress updates here (autonomous mode)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "gulp compile-extension:mini-qualia",
+    "watch": "gulp watch-extension:mini-qualia"
+  }
+}
